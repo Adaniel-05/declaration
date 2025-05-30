@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nuestra Cajita</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom, #fce4ec, #f3e5f5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #container {
+      text-align: center;
+      position: relative;
+    }
+    h1 {
+      color: #ad1457;
+      font-size: 24px;
+      margin-bottom: 20px;
+      animation: fadeIn 2s ease-in-out;
+    }
+    .box {
+      width: 200px;
+      height: 150px;
+      background-image: url('https://i.imgur.com/3Y3Z7qL.png'); /* Imagen de caja sorpresa realista */
+      background-size: cover;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .box:hover {
+      transform: scale(1.05);
+    }
+    .open .lid {
+      transform: rotateX(180deg);
+    }
+    .icons {
+      display: none;
+      margin-top: 30px;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeIn 1s ease-in-out;
+    }
+    .icon {
+      width: 80px;
+      height: 80px;
+      background-color: #ffffffcc;
+      border-radius: 20px;
+      padding: 10px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .icon:hover {
+      transform: scale(1.1);
+    }
+    .icon img {
+      width: 50px;
+      height: 50px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #fff0f5;
+      padding: 20px;
+      border-radius: 20px;
+      width: 80%;
+      max-width: 500px;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+    .close {
+      margin-top: 15px;
+      cursor: pointer;
+      color: #c2185b;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1>Toca para abrir 💝</h1>
+    <div class="box" id="box"></div>
+    <div class="icons" id="icons">
+      <div class="icon" data-modal="modal1"><img src="https://i.imgur.com/8vGZ0lw.png" alt="Playlist"></div>
+      <div class="icon" data-modal="modal2"><img src="https://i.imgur.com/bEXZx1Q.png" alt="Carta"></div>
+      <div class="icon" data-modal="modal3"><img src="https://i.imgur.com/tQFJQ9g.png" alt="Fotos"></div>
+      <div class="icon" data-modal="modal4"><img src="https://i.imgur.com/NWRD1vD.png" alt="Lista"></div>
+      <div class="icon" data-modal="modal5"><img src="https://i.imgur.com/9nbiQZ0.png" alt="Corazon"></div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal" id="modal1">
+    <div class="modal-content">
+      <h2>Nuestra Playlist</h2>
+      <iframe width="100%" height="200" src="https://www.youtube.com/embed?listType=playlist&list=YOUR_PLAYLIST_ID" frameborder="0" allowfullscreen></iframe>
+      <div class="close" onclick="closeModal(1)">Cerrar</div>
+    </div>
+  </div>
+  <div class="modal" id="modal2">
+    <div class="modal-content">
+      <h2>Carta para vos</h2>
+      <p>Aquí va la carta que le vas a escribir, contándole todo lo que sentís. Puede ser larga o corta, lo que quieras transmitirle.</p>
+      <div class="close" onclick="closeModal(2)">Cerrar</div>
+    </div>
+  </div>
+  <div class="modal" id="modal3">
+    <div class="modal-content">
+      <h2>Recuerdos en fotos</h2>
+      <p>Aquí pondremos tus imágenes con un efecto interactivo. Lo agregamos después si querés ahora seguir el resto.</p>
+      <div class="close" onclick="closeModal(3)">Cerrar</div>
+    </div>
+  </div>
+  <div class="modal" id="modal4">
+    <div class="modal-content">
+      <h2>Nuestros planes</h2>
+      <ul style="text-align:left;">
+        <li><input type="checkbox" checked> Ir al parque juntos</li>
+        <li><input type="checkbox" checked> Ver una película abrazados</li>
+        <li><input type="checkbox"> Cocinar algo rico</li>
+        <li><input type="checkbox"> Viajar en tren</li>
+        <li><input type="checkbox"> Hacer un picnic</li>
+        <li><input type="checkbox"> Ver juntos las estrellas</li>
+      </ul>
+      <div class="close" onclick="closeModal(4)">Cerrar</div>
+    </div>
+  </div>
+  <div class="modal" id="modal5">
+    <div class="modal-content">
+      <h2>Y por último...</h2>
+      <p>Después de todo esto...<br><strong>¿Te gustaría ser mi novia? 💖</strong></p>
+    </div>
+  </div>
+
+  <script>
+    const box = document.getElementById('box');
+    const icons = document.getElementById('icons');
+    const iconElements = document.querySelectorAll('.icon');
+
+    box.addEventListener('click', () => {
+      box.classList.add('open');
+      setTimeout(() => {
+        icons.style.display = 'flex';
+      }, 1000);
+    });
+
+    iconElements.forEach((icon, index) => {
+      icon.addEventListener('click', () => {
+        const modalId = icon.getAttribute('data-modal');
+        document.getElementById(modalId).style.display = 'flex';
+      });
+    });
+
+    function closeModal(num) {
+      const modal = document.getElementById('modal' + num);
+      modal.style.display = 'none';
+      if (num < 5) {
+        iconElements[num - 1].style.display = 'none';
+        iconElements[num].style.display = 'flex';
+      }
+    }
+
+    window.onload = () => {
+      iconElements.forEach((icon, i) => icon.style.display = i === 0 ? 'flex' : 'none');
+    };
+  </script>
+</body>
+</html>
