@@ -18,6 +18,10 @@
     }
 
     #container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
       position: relative;
     }
@@ -30,13 +34,14 @@
     }
 
     .box {
+      display: block;
+      margin: auto;
       width: 200px;
       height: 200px;
       background-image: url('caja-cerrada.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      margin: 0 auto;
       cursor: pointer;
       position: relative;
       z-index: 2;
@@ -51,8 +56,12 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 200px;
-      height: 200px;
+      width: 250px;
+      height: 250px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
       pointer-events: none;
       z-index: 3;
     }
@@ -64,7 +73,6 @@
       border-radius: 20px;
       padding: 8px;
       cursor: pointer;
-      position: absolute;
       opacity: 0;
       transition: all 0.6s ease;
       display: flex;
@@ -83,34 +91,6 @@
       pointer-events: auto;
     }
 
-    .modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.4);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 10;
-    }
-
-    .modal-content {
-      background: #fff0f5;
-      padding: 20px;
-      border-radius: 20px;
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    .close {
-      margin-top: 15px;
-      cursor: pointer;
-      color: #c2185b;
-      font-weight: bold;
-    }
-
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
@@ -122,54 +102,11 @@
     <h1>Toca para abrir 💝</h1>
     <div class="box" id="box"></div>
     <div class="icons" id="icons">
-      <div class="icon" id="icon1" data-modal="modal2" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
-      <div class="icon" id="icon2" data-modal="modal1" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
-      <div class="icon" id="icon3" data-modal="modal3" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
-      <div class="icon" id="icon4" data-modal="modal4" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
-      <div class="icon" id="icon5" data-modal="modal5" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
-    </div>
-  </div>
-
-  <!-- Modals -->
-  <div class="modal" id="modal1">
-    <div class="modal-content">
-      <h2>Nuestra Playlist</h2>
-      <iframe width="100%" height="200" src="https://www.youtube.com/embed?listType=playlist&list=YOUR_PLAYLIST_ID" frameborder="0" allowfullscreen></iframe>
-      <div class="close" onclick="closeModal(1)">Cerrar</div>
-    </div>
-  </div>
-  <div class="modal" id="modal2">
-    <div class="modal-content">
-      <h2>Carta para vos</h2>
-      <p>Aquí va la carta que le vas a escribir, contándole todo lo que sentís. Puede ser larga o corta, lo que quieras transmitirle.</p>
-      <div class="close" onclick="closeModal(2)">Cerrar</div>
-    </div>
-  </div>
-  <div class="modal" id="modal3">
-    <div class="modal-content">
-      <h2>Recuerdos en fotos</h2>
-      <p>Aquí pondremos tus imágenes con un efecto interactivo. Lo agregamos después si querés ahora seguir el resto.</p>
-      <div class="close" onclick="closeModal(3)">Cerrar</div>
-    </div>
-  </div>
-  <div class="modal" id="modal4">
-    <div class="modal-content">
-      <h2>Nuestros planes</h2>
-      <ul style="text-align:left;">
-        <li><input type="checkbox" checked> Ir al parque juntos</li>
-        <li><input type="checkbox" checked> Ver una película abrazados</li>
-        <li><input type="checkbox"> Cocinar algo rico</li>
-        <li><input type="checkbox"> Viajar en tren</li>
-        <li><input type="checkbox"> Hacer un picnic</li>
-        <li><input type="checkbox"> Ver juntos las estrellas</li>
-      </ul>
-      <div class="close" onclick="closeModal(4)">Cerrar</div>
-    </div>
-  </div>
-  <div class="modal" id="modal5">
-    <div class="modal-content">
-      <h2>Y por último...</h2>
-      <p>Después de todo esto...<br><strong>¿Te gustaría ser mi novia? 💖</strong></p>
+      <div class="icon" id="icon1" data-modal="modal2"></div>
+      <div class="icon" id="icon2" data-modal="modal1"></div>
+      <div class="icon" id="icon3" data-modal="modal3"></div>
+      <div class="icon" id="icon4" data-modal="modal4"></div>
+      <div class="icon" id="icon5" data-modal="modal5"></div>
     </div>
   </div>
 
@@ -177,11 +114,11 @@
     const box = document.getElementById('box');
     const icons = document.querySelectorAll('.icon');
     const iconPositions = [
-      { top: '25%', left: '50%' }, // arriba
-      { top: '50%', left: '75%' }, // derecha
-      { top: '75%', left: '50%' }, // abajo
-      { top: '50%', left: '25%' }, // izquierda
-      { top: '50%', left: '50%' }  // centro
+      { top: '25%', left: '50%' },
+      { top: '50%', left: '75%' },
+      { top: '75%', left: '50%' },
+      { top: '50%', left: '25%' },
+      { top: '50%', left: '50%' }
     ];
 
     let iconIndex = 0;
@@ -198,32 +135,16 @@
       if (iconIndex < icons.length) {
         const icon = icons[iconIndex];
         icon.innerHTML = `<img src="${icon.dataset.modal === 'modal2' ? 'carta.png' :
-                                         icon.dataset.modal === 'modal1' ? 'musica.png' :
-                                         icon.dataset.modal === 'modal3' ? 'camara.png' :
-                                         icon.dataset.modal === 'modal4' ? 'lista.png' :
-                                         'corazon.png'}">`;
+                                     icon.dataset.modal === 'modal1' ? 'musica.png' :
+                                     icon.dataset.modal === 'modal3' ? 'camara.png' :
+                                     icon.dataset.modal === 'modal4' ? 'lista.png' :
+                                     'corazon.png'}">`;
         icon.classList.add('active');
-      }
-    }
-
-    icons.forEach((icon, i) => {
-      icon.addEventListener('click', () => {
-        const modalId = icon.getAttribute('data-modal');
-        document.getElementById(modalId).style.display = 'flex';
-        currentModalOpen = i;
-      });
-    });
-
-    function closeModal(num) {
-      document.getElementById('modal' + num).style.display = 'none';
-      if (iconIndex === currentModalOpen) {
-        const icon = icons[iconIndex];
         const pos = iconPositions[iconIndex];
         icon.style.top = pos.top;
         icon.style.left = pos.left;
         icon.style.transform = 'translate(-50%, -50%)';
         iconIndex++;
-        showNextIcon();
       }
     }
   </script>
