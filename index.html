@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <link href="https://fonts.googleapis.com/css?family=Pacifico&display=swap" rel="stylesheet">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nuestra Cajita</title>
@@ -9,63 +10,56 @@
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to bottom, #fce4ec, #f3e5f5);
+      background: linear-gradient(to bottom, #ecbfce, #f3e5f5);
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       overflow: hidden;
     }
-
     #container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       text-align: center;
       position: relative;
     }
-
-    h1 {
+    #initialText, #afterOpenText {
       color: #ad1457;
       font-size: 24px;
       margin-bottom: 20px;
       animation: fadeIn 2s ease-in-out;
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
     }
-
+    #afterOpenText {
+      display: none;
+      top: -80px;
+    }
     .box {
-      display: block;
-      margin: auto;
       width: 200px;
       height: 200px;
       background-image: url('caja-cerrada.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
+      margin: 0 auto;
       cursor: pointer;
       position: relative;
       z-index: 2;
     }
-
     .box.open {
       background-image: url('caja-abierta.png');
     }
-
     .icons {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 250px;
-      height: 250px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
+      width: 200px;
+      height: 200px;
       pointer-events: none;
       z-index: 3;
     }
-
     .icon {
       width: 60px;
       height: 60px;
@@ -73,80 +67,271 @@
       border-radius: 20px;
       padding: 8px;
       cursor: pointer;
+      position: absolute;
       opacity: 0;
       transition: all 0.6s ease;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      pointer-events: none;
+      z-index: 4;
     }
-
     .icon img {
       width: 40px;
       height: 40px;
     }
-
     .icon.active {
       opacity: 1;
       pointer-events: auto;
     }
-
+    .icon-heart {
+  background: linear-gradient(135deg, #ffb6d5 60%, #ff80ab 100%);
+  box-shadow: 0 4px 16px #ff80ab55;
+  border: 2px solid #ff4081;
+  }
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+    .modal-content {
+      background: #fff0f5;
+      padding: 20px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+      position: relative;
+    }
+    .close {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  font-size: 2em;
+  line-height: 1;
+  cursor: pointer;
+  color: #c2185b;
+  font-weight: bold;
+  background: none;
+  border: none;
+  z-index: 20;
+  transition: color 0.2s;
+}
+.close:hover {
+  color: #ad1457;
+}
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
+  
+  .modal-content ul label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.3;
+  word-break: break-word;
+  white-space: normal;
+  
+}
+.modal-content ul input[type="checkbox"] {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
   </style>
 </head>
 <body>
   <div id="container">
-    <h1>Toca para abrir 💝</h1>
+    <h1 id="initialText">Toca para abrir 💝</h1>
+    <h1 id="afterOpenText" style="display:none;">Toca el ícono ✨</h1>
     <div class="box" id="box"></div>
     <div class="icons" id="icons">
-      <div class="icon" id="icon1" data-modal="modal2"></div>
-      <div class="icon" id="icon2" data-modal="modal1"></div>
-      <div class="icon" id="icon3" data-modal="modal3"></div>
-      <div class="icon" id="icon4" data-modal="modal4"></div>
-      <div class="icon" id="icon5" data-modal="modal5"></div>
-    </div>
+  <div class="icon" id="icon1"><img src="carta.png" alt="Carta"></div>
+  <div class="icon" id="icon2"><img src="musica.png" alt="Música"></div>
+  <div class="icon" id="icon3"><img src="camara.png" alt="Cámara"></div>
+  <div class="icon" id="icon4"><img src="lista.png" alt="Lista"></div>
+  <div class="icon icon-heart" id="icon5"><img src="corazon.png" alt="Corazón"></div>
+</div>
   </div>
 
-  <script>
-    const box = document.getElementById('box');
-    const icons = document.querySelectorAll('.icon');
-    const iconPositions = [
-      { top: '25%', left: '50%' },
-      { top: '50%', left: '75%' },
-      { top: '75%', left: '50%' },
-      { top: '50%', left: '25%' },
-      { top: '50%', left: '50%' }
-    ];
+  <!-- Modales -->
+ <div class="modal" id="modal1">
+  <div class="modal-content">
+    <h2>Carta</h2>
+    <p>Empecemos coon esto! Este es un pequeño recorrido de nosotros juntos, son 5 iconos contando este
+      No puedo ser mas feliz sinceramente, y queria sorprenderte con esto 🌷espero te guste Nomi
+    </p>
+    <div class="close" onclick="closeModal(1)">&times;</div>
+  </div>
+</div>
+<div class="modal" id="modal2">
+  <div class="modal-content">
+    <h2>Música</h2>
+    <p>No puedo evitar escuchar estas canciones y que tu me vengas a la mente, cada uno tiene un significado hacia ti</p>
+    <div style="margin-bottom: 15px;">
+      <strong>1. TEARS IN MY HEART - Twenty One Pilots</strong><br>
+      <iframe width="100%" height="80" src="https://www.youtube.com/embed/nky4me4NP70" title="TEARS IN MY HEART - TOP" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+    <div style="margin-bottom: 15px;">
+      <strong>2. Puentes - Gustavo Cerati</strong><br>
+      <iframe width="100%" height="80" src="https://www.youtube.com/embed/0wqUrj9gH7k" title="Puentes - Gustavo Cerati" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+    <div style="margin-bottom: 15px;">
+      <strong>3. Amor Completo - Mon Laferte</strong><br>
+      <iframe width="100%" height="80" src="https://www.youtube.com/embed/8FhBq8rUoJ0" title="Amor Completo - Mon Laferte" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+    <div style="margin-bottom: 15px;">
+      <strong>4. Just the Way You Are - Bruno Mars</strong><br>
+      <iframe width="100%" height="80" src="https://www.youtube.com/embed/LjhCEhWiKXk" title="Just the Way You Are - Bruno Mars" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+    <div class="close" onclick="closeModal(2)">&times;</div>
+  </div>
+</div>
+  <div class="modal" id="modal3">
+  <div class="modal-content">
+    <h2>Fotos</h2>
+    <div style="display: flex; flex-direction: column; gap: 18px; align-items: center;">
+      <div style="text-align: center;">
+        <img src="foto1.png" alt="Foto 1" style="width: 100px; height: 100px; object-fit: cover; border-radius: 12px; box-shadow: 0 2px 8px #0001;">
+        <div style="font-size: 13px; margin-top: 6px;">Esta foto es de la primera actividad que hicimos juntos, como olvidarlo si me rei demasiado</div>
+      </div>
+      <div style="text-align: center;">
+        <img src="foto3.jpg" alt="Foto 2" style="width: 100px; height: 100px; object-fit: cover; border-radius: 12px; box-shadow: 0 2px 8px #0001;">
+        <div style="font-size: 13px; margin-top: 6px;">Nuestras noches de rave, viendo tu caricatura favorita, y todo lo que hablamos</div>
+      </div>
+      <div style="text-align: center;">
+        <img src="foto2.jpg" alt="Foto 3" style="width: 100px; height: 100px; object-fit: cover; border-radius: 12px; box-shadow: 0 2px 8px #0001;">
+        <div style="font-size: 13px; margin-top: 6px;">El primer cielo que me mandaste, sabes, que hagas esto, significa demasiado para mi, puede ser una simple foto pero para mi es una muestra de amor de que te intereso lo que te dije y lo que hago</div>
+      </div>
+    </div>
+    <div class="close" onclick="closeModal(3)">&times;</div>
+  </div>
+</div>
+  <div class="modal" id="modal4">
+  <div class="modal-content">
+    <h2>Lista</h2>
+    <ul style="list-style: none; padding: 0; text-align: left; max-width: 300px; margin: 0 auto;">
+      <li>
+        <label>
+          <input type="checkbox" checked>
+          Conocernos el uno al otro
+        </label>
+      </li>
+      <li>
+        <label>
+          <input type="checkbox" checked>
+          Ir en serio con una relacion, estable, solida y con amor de verdad
+        </label>
+      </li>
+      <li>
+        <label>
+          <input type="checkbox">
+          Conocernos en persona y vivir una experiencia que sea dificil de olvidar
+        </label>
+      </li>
+      <li>
+        <label>
+          <input type="checkbox">
+          Conocer a los padres de cada uno y que nos conozcan
+        </label>
+      </li>
+      <li>
+        <label>
+          <input type="checkbox">
+          Casarnos y formar una familia juntos
+        </label>
+      </li>
+    </ul>
+<div class="close" onclick="closeModal(4)">&times;</div>
+  </div>
+</div>
+  <div class="modal" id="modal5">
+  <div class="modal-content">
+    <p style="font-size: 18px; margin-bottom: 24px;">
+      Todo esto es solo una pequeña muestra de lo mucho que significas para mí y por eso queria preguntarte...
+    </p>
+    <div style="
+      font-size: 2.2em;
+      font-family: 'Pacifico', 'Segoe Script', cursive, sans-serif;
+      color: #e91e63;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 12px #ffb6d5;
+      letter-spacing: 2px;
+    ">
+      ¿QUIERES SER MI NOVIA?
+    </div>
+    <div class="close" onclick="closeModal(5)">&times;</div>
+  </div>
+</div>
+  </div>
 
-    let iconIndex = 0;
-    let currentModalOpen = null;
+    <script>
+const box = document.getElementById('box');
+const initialText = document.getElementById('initialText');
+const afterOpenText = document.getElementById('afterOpenText');
+const icons = document.querySelectorAll('.icon');
+// Más separación entre los iconos
+const iconPositions = [
+  { top: '20%', left: '50%' },   // Carta
+  { top: '50%', left: '90%' },   // Música
+  { top: '80%', left: '50%' },   // Cámara
+  { top: '50%', left: '10%' },   // Lista
+  { top: '50%', left: '50%' }    // Corazón (centro)
+];
 
-    box.addEventListener('click', () => {
-      if (!box.classList.contains('open')) {
-        box.classList.add('open');
-        showNextIcon();
-      }
-    });
+let iconIndex = 0;
 
-    function showNextIcon() {
-      if (iconIndex < icons.length) {
-        const icon = icons[iconIndex];
-        icon.innerHTML = `<img src="${icon.dataset.modal === 'modal2' ? 'carta.png' :
-                                     icon.dataset.modal === 'modal1' ? 'musica.png' :
-                                     icon.dataset.modal === 'modal3' ? 'camara.png' :
-                                     icon.dataset.modal === 'modal4' ? 'lista.png' :
-                                     'corazon.png'}">`;
-        icon.classList.add('active');
-        const pos = iconPositions[iconIndex];
-        icon.style.top = pos.top;
-        icon.style.left = pos.left;
-        icon.style.transform = 'translate(-50%, -50%)';
-        iconIndex++;
-      }
+// Oculta todos los iconos al inicio
+icons.forEach(icon => {
+  icon.classList.remove('active');
+  icon.style.top = '50%';
+  icon.style.left = '50%';
+  icon.style.transform = 'translate(-50%, -50%)';
+});
+
+box.addEventListener('click', () => {
+  if (!box.classList.contains('open')) {
+    box.classList.add('open');
+    initialText.style.display = 'none';
+    afterOpenText.style.display = 'block';
+    showNextIcon();
+  }
+});
+
+function showNextIcon() {
+  if (iconIndex < icons.length) {
+    const icon = icons[iconIndex];
+    icon.style.top = iconPositions[iconIndex].top;
+    icon.style.left = iconPositions[iconIndex].left;
+    icon.classList.add('active');
+  }
+}
+
+icons.forEach((icon, i) => {
+  icon.addEventListener('click', () => {
+    if (i === iconIndex) {
+      document.getElementById('modal' + (i + 1)).style.display = 'flex';
     }
+  });
+});
+
+function closeModal(num) {
+  document.getElementById('modal' + num).style.display = 'none';
+  iconIndex++;
+  showNextIcon();
+}
+window.closeModal = closeModal;
   </script>
 </body>
 </html>
+
+
+
