@@ -28,48 +28,52 @@
     }
     .box {
       width: 200px;
-      height: 150px;
-      background-image: url('https://i.imgur.com/3Y3Z7qL.png'); /* Imagen de caja sorpresa realista */
-      background-size: cover;
-      border-radius: 10px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-      position: relative;
+      height: 200px;
+      background-image: url('regalo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      margin: 0 auto;
       cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-    .box:hover {
-      transform: scale(1.05);
-    }
-    .open .lid {
-      transform: rotateX(180deg);
+      position: relative;
+      z-index: 2;
     }
     .icons {
-      display: none;
-      margin-top: 30px;
-      gap: 20px;
-      justify-content: center;
-      flex-wrap: wrap;
-      animation: fadeIn 1s ease-in-out;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      z-index: 1;
     }
     .icon {
-      width: 80px;
-      height: 80px;
+      width: 70px;
+      height: 70px;
       background-color: #ffffffcc;
       border-radius: 20px;
       padding: 10px;
       cursor: pointer;
-      transition: transform 0.3s ease;
+      transition: transform 0.4s ease;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    .icon:hover {
-      transform: scale(1.1);
+      opacity: 0;
+      pointer-events: none;
     }
     .icon img {
       width: 50px;
       height: 50px;
+    }
+    .icon.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .icon.lift {
+      transform: translateY(-120px);
     }
     @keyframes fadeIn {
       from { opacity: 0; }
@@ -106,11 +110,11 @@
     <h1>Toca para abrir 💝</h1>
     <div class="box" id="box"></div>
     <div class="icons" id="icons">
-      <div class="icon" data-modal="modal1"><img src="cancion.png" alt="Playlist"></div>
-      <div class="icon" data-modal="modal2"><img src="https://i.imgur.com/bEXZx1Q.png" alt="Carta"></div>
-      <div class="icon" data-modal="modal3"><img src="https://i.imgur.com/tQFJQ9g.png" alt="Fotos"></div>
-      <div class="icon" data-modal="modal4"><img src="https://i.imgur.com/NWRD1vD.png" alt="Lista"></div>
-      <div class="icon" data-modal="modal5"><img src="https://i.imgur.com/9nbiQZ0.png" alt="Corazon"></div>
+      <div class="icon" data-modal="modal2"><img src="carta.png" alt="Carta"></div>
+      <div class="icon" data-modal="modal1"><img src="musica.png" alt="Playlist"></div>
+      <div class="icon" data-modal="modal3"><img src="camara.png" alt="Fotos"></div>
+      <div class="icon" data-modal="modal4"><img src="lista.png" alt="Lista"></div>
+      <div class="icon" data-modal="modal5"><img src="corazon.png" alt="Corazon"></div>
     </div>
   </div>
 
@@ -159,17 +163,21 @@
 
   <script>
     const box = document.getElementById('box');
-    const icons = document.getElementById('icons');
     const iconElements = document.querySelectorAll('.icon');
+    let iconIndex = 0;
 
     box.addEventListener('click', () => {
-      box.classList.add('open');
-      setTimeout(() => {
-        icons.style.display = 'flex';
-      }, 1000);
+      if (iconIndex < iconElements.length) {
+        const icon = iconElements[iconIndex];
+        icon.classList.add('active');
+        setTimeout(() => {
+          icon.classList.add('lift');
+        }, 500);
+        iconIndex++;
+      }
     });
 
-    iconElements.forEach((icon, index) => {
+    iconElements.forEach((icon) => {
       icon.addEventListener('click', () => {
         const modalId = icon.getAttribute('data-modal');
         document.getElementById(modalId).style.display = 'flex';
@@ -177,17 +185,8 @@
     });
 
     function closeModal(num) {
-      const modal = document.getElementById('modal' + num);
-      modal.style.display = 'none';
-      if (num < 5) {
-        iconElements[num - 1].style.display = 'none';
-        iconElements[num].style.display = 'flex';
-      }
+      document.getElementById('modal' + num).style.display = 'none';
     }
-
-    window.onload = () => {
-      iconElements.forEach((icon, i) => icon.style.display = i === 0 ? 'flex' : 'none');
-    };
   </script>
 </body>
 </html>
