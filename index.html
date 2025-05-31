@@ -26,7 +26,8 @@
       margin-bottom: 20px;
       animation: fadeIn 2s ease-in-out;
     }
-    .box {
+    
+    .modal-active .box {
       width: 200px;
       height: 200px;
       background-image: url('regalo.png');
@@ -36,7 +37,7 @@
       margin: 0 auto;
       cursor: pointer;
       position: relative;
-      z-index: 2;
+      z-index: 0;
     }
     .icons {
       position: absolute;
@@ -177,16 +178,17 @@
       }
     });
 
-    iconElements.forEach((icon) => {
-      icon.addEventListener('click', () => {
-        const modalId = icon.getAttribute('data-modal');
-        document.getElementById(modalId).style.display = 'flex';
-      });
+    icon.addEventListener('click', () => {
+  const modalId = icon.getAttribute('data-modal');
+  document.getElementById(modalId).style.display = 'flex';
+  document.body.classList.add('modal-active');
+});
     });
 
     function closeModal(num) {
-      document.getElementById('modal' + num).style.display = 'none';
-    }
+  document.getElementById('modal' + num).style.display = 'none';
+  document.body.classList.remove('modal-active');
+}
   </script>
 </body>
 </html>
