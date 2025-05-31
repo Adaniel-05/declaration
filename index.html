@@ -30,9 +30,9 @@
     }
 
     .box {
-      width: 150px;
-      height: 150px;
-      background-image: url('regalo.png');
+      width: 200px;
+      height: 200px;
+      background-image: url('caja-cerrada.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -40,11 +40,10 @@
       cursor: pointer;
       position: relative;
       z-index: 2;
-      transition: z-index 0.3s ease;
     }
 
-    .modal-active .box {
-      z-index: 0;
+    .box.open {
+      background-image: url('caja-abierta.png');
     }
 
     .icons {
@@ -52,28 +51,25 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-      z-index: 1;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
     }
 
     .icon {
-      width: 70px;
-      height: 70px;
+      width: 60px;
+      height: 60px;
       background-color: #ffffffcc;
       border-radius: 20px;
-      padding: 10px;
+      padding: 8px;
       cursor: pointer;
-      transition: transform 0.5s ease, opacity 0.5s ease;
+      position: absolute;
+      opacity: 0;
+      transition: all 0.6s ease;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(30px) scale(0.5);
     }
 
     .icon img {
@@ -84,12 +80,6 @@
     .icon.active {
       opacity: 1;
       pointer-events: auto;
-      transform: translateY(-80px) scale(1);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
     }
 
     .modal {
@@ -120,18 +110,9 @@
       font-weight: bold;
     }
 
-    @media (max-width: 600px) {
-      .icon {
-        width: 60px;
-        height: 60px;
-      }
-      .icon img {
-        width: 35px;
-        height: 35px;
-      }
-      .modal-content {
-        padding: 15px;
-      }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
   </style>
 </head>
@@ -140,11 +121,11 @@
     <h1>Toca para abrir 💝</h1>
     <div class="box" id="box"></div>
     <div class="icons" id="icons">
-      <div class="icon" data-modal="modal2"><img src="carta.png" alt="Carta"></div>
-      <div class="icon" data-modal="modal1"><img src="musica.png" alt="Playlist"></div>
-      <div class="icon" data-modal="modal3"><img src="camara.png" alt="Fotos"></div>
-      <div class="icon" data-modal="modal4"><img src="lista.png" alt="Lista"></div>
-      <div class="icon" data-modal="modal5"><img src="corazon.png" alt="Corazon"></div>
+      <div class="icon" id="icon1" data-modal="modal2" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+      <div class="icon" id="icon2" data-modal="modal1" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+      <div class="icon" id="icon3" data-modal="modal3" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+      <div class="icon" id="icon4" data-modal="modal4" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+      <div class="icon" id="icon5" data-modal="modal5" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
     </div>
   </div>
 
@@ -193,28 +174,54 @@
 
   <script>
     const box = document.getElementById('box');
-    const iconElements = document.querySelectorAll('.icon');
+    const icons = document.querySelectorAll('.icon');
+    const iconPositions = [
+      { top: '35%', left: '50%' }, // arriba
+      { top: '50%', left: '65%' }, // derecha
+      { top: '65%', left: '50%' }, // abajo
+      { top: '50%', left: '35%' }, // izquierda
+      { top: '50%', left: '50%' }  // centro
+    ];
+
     let iconIndex = 0;
 
     box.addEventListener('click', () => {
-      if (iconIndex < iconElements.length) {
-        const icon = iconElements[iconIndex];
-        icon.classList.add('active');
-        iconIndex++;
+      if (!box.classList.contains('open')) {
+        box.classList.add('open');
+        showNextIcon();
       }
     });
 
-    iconElements.forEach((icon) => {
+    function showNextIcon() {
+      if (iconIndex < icons.length) {
+        const icon = icons[iconIndex];
+        icon.innerHTML = `<img src="${icon.dataset.modal === 'modal2' ? 'carta.png' :
+                                     icon.dataset.modal === 'modal1' ? 'musica.png' :
+                                     icon.dataset.modal === 'modal3' ? 'camara.png' :
+                                     icon.dataset.modal === 'modal4' ? 'lista.png' :
+                                     'corazon.png'}">`;
+        icon.classList.add('active');
+      }
+    }
+
+    icons.forEach((icon, i) => {
       icon.addEventListener('click', () => {
         const modalId = icon.getAttribute('data-modal');
         document.getElementById(modalId).style.display = 'flex';
-        document.body.classList.add('modal-active');
       });
     });
 
     function closeModal(num) {
       document.getElementById('modal' + num).style.display = 'none';
-      document.body.classList.remove('modal-active');
+      if (iconIndex < icons.length) {
+        const icon = icons[iconIndex];
+        const pos = iconPositions[iconIndex];
+        icon.style.top = pos.top;
+        icon.style.left = pos.left;
+        icon.style.transform = 'translate(-50%, -50%)';
+        iconIndex++;
+        showNextIcon();
+      }
     }
   </script>
 </body>
