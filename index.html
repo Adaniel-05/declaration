@@ -51,10 +51,10 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 100%;
-      height: 100%;
+      width: 200px;
+      height: 200px;
       pointer-events: none;
-       z-index: 3;
+      z-index: 3;
     }
 
     .icon {
@@ -177,14 +177,15 @@
     const box = document.getElementById('box');
     const icons = document.querySelectorAll('.icon');
     const iconPositions = [
-      { top: '35%', left: '50%' }, // arriba
-      { top: '50%', left: '65%' }, // derecha
-      { top: '65%', left: '50%' }, // abajo
-      { top: '50%', left: '35%' }, // izquierda
+      { top: '25%', left: '50%' }, // arriba
+      { top: '50%', left: '75%' }, // derecha
+      { top: '75%', left: '50%' }, // abajo
+      { top: '50%', left: '25%' }, // izquierda
       { top: '50%', left: '50%' }  // centro
     ];
 
     let iconIndex = 0;
+    let currentModalOpen = null;
 
     box.addEventListener('click', () => {
       if (!box.classList.contains('open')) {
@@ -197,10 +198,10 @@
       if (iconIndex < icons.length) {
         const icon = icons[iconIndex];
         icon.innerHTML = `<img src="${icon.dataset.modal === 'modal2' ? 'carta.png' :
-                                     icon.dataset.modal === 'modal1' ? 'musica.png' :
-                                     icon.dataset.modal === 'modal3' ? 'camara.png' :
-                                     icon.dataset.modal === 'modal4' ? 'lista.png' :
-                                     'corazon.png'}">`;
+                                         icon.dataset.modal === 'modal1' ? 'musica.png' :
+                                         icon.dataset.modal === 'modal3' ? 'camara.png' :
+                                         icon.dataset.modal === 'modal4' ? 'lista.png' :
+                                         'corazon.png'}">`;
         icon.classList.add('active');
       }
     }
@@ -209,12 +210,13 @@
       icon.addEventListener('click', () => {
         const modalId = icon.getAttribute('data-modal');
         document.getElementById(modalId).style.display = 'flex';
+        currentModalOpen = i;
       });
     });
 
     function closeModal(num) {
       document.getElementById('modal' + num).style.display = 'none';
-      if (iconIndex < icons.length) {
+      if (iconIndex === currentModalOpen) {
         const icon = icons[iconIndex];
         const pos = iconPositions[iconIndex];
         icon.style.top = pos.top;
